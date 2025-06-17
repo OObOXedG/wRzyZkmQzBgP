@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,3 +48,39 @@ public class GorillaHatButton : MonoBehaviour
 			}
 		}
 	}
+
+	private void OnTriggerEnter(Collider collider)
+	{
+		if (!(touchTime + debounceTime < Time.time))
+		{
+			return;
+		}
+		touchTime = Time.time;
+		Debug.Log("collision detected" + collider, collider);
+		if (collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() != null)
+		{
+			GorillaTriggerColliderHandIndicator component = collider.GetComponent<GorillaTriggerColliderHandIndicator>();
+			Debug.Log("buttan press");
+			isOn = !isOn;
+			buttonParent.PressButton(isOn, buttonType, cosmeticName);
+			if (component != null)
+			{
+				GorillaTagger.Instance.StartVibration(component.isLeftHand, GorillaTagger.Instance.tapHapticStrength / 2f, GorillaTagger.Instance.tapHapticDuration);
+			}
+		}
+	}
+
+	public void UpdateColor()
+	{
+		if (isOn)
+		{
+			GetComponent<MeshRenderer>().material = onMaterial;
+			myText.text = onText;
+		}
+		else
+		{
+			GetComponent<MeshRenderer>().material = offMaterial;
+			myText.text = offText;
+		}
+	}
+}
